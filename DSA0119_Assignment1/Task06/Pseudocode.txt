@@ -1,0 +1,10 @@
+START
+Read zone, hour and card balance.
+Use switch to find the base fare.
+Check whether the hour is peak time.
+If peak, add 20 percent surcharge.
+If balance after payment is at least Rs 50:
+    Deduct fare and display balance.
+Otherwise:
+    Display journey denied.
+STOP
