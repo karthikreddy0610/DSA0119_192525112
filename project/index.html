@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataVault – Secure Enterprise File Storage &amp; Access Auditor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- AUTH / LOGIN & SIGNUP SCREEN -->
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="brand-icon-wrapper">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Data<span>Vault</span></h1>
+          <p class="brand-tagline">Secure Enterprise File Access Auditor</p>
+        </div>
+      </div>
+
+      <!-- Auth Tabs: Sign In / Create Account -->
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab-btn active" id="tabBtnLogin" onclick="switchAuthTab('login')">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In
+        </button>
+        <button type="button" class="auth-tab-btn" id="tabBtnRegister" onclick="switchAuthTab('register')">
+          <i class="fa-solid fa-user-plus"></i> Create Account
+        </button>
+      </div>
+
+      <!-- 1. SIGN IN FORM -->
+      <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="usernameInput"><i class="fa-regular fa-user"></i> Username</label>
+          <input type="text" id="usernameInput" placeholder="Enter your username (e.g. alice_dev or admin)" required value="admin" autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="passwordInput"><i class="fa-solid fa-lock"></i> Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="passwordInput" placeholder="Enter password (default: 123)" required value="admin123" autocomplete="current-password">
+            <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility('passwordInput')">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick 1-Click User Select for Easy Testing -->
+        <div class="quick-login-box">
+          <label><i class="fa-solid fa-bolt text-accent"></i> Quick Select User:</label>
+          <div class="quick-user-chips">
+            <button type="button" class="quick-user-chip" onclick="fillQuickLogin('admin', 'admin123')">
+              <strong>@admin</strong> (SecOps)
+            </button>
+            <button type="button" class="quick-user-chip" onclick="fillQuickLogin('alice_dev', '123')">
+              <strong>@alice_dev</strong> (Dev)
+            </button>
+            <button type="button" class="quick-user-chip" onclick="fillQuickLogin('bob_analyst', '123')">
+              <strong>@bob_analyst</strong> (Finance)
+            </button>
+            <button type="button" class="quick-user-chip" onclick="fillQuickLogin('guest_user', '123')">
+              <strong>@guest_user</strong> (External)
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="loginBtn">
+          <span>Sign In to DataVault</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <!-- 2. CREATE ACCOUNT FORM (FOR ANY NEW USER) -->
+      <form id="registerForm" class="auth-form" style="display: none;" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label for="regUsername"><i class="fa-regular fa-user"></i> Choose Username *</label>
+          <input type="text" id="regUsername" placeholder="e.g. john_doe" required autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="regFullname"><i class="fa-regular fa-id-card"></i> Your Full Name *</label>
+          <input type="text" id="regFullname" placeholder="e.g. John Doe" required>
+        </div>
+
+        <div class="form-group">
+          <label for="regPassword"><i class="fa-solid fa-lock"></i> Set Password *</label>
+          <div class="password-wrapper">
+            <input type="password" id="regPassword" placeholder="Create a password" required autocomplete="new-password">
+            <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility('regPassword')">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="regDept">Department</label>
+            <input type="text" id="regDept" placeholder="e.g. Research, Operations" value="Engineering">
+          </div>
+          <div class="form-group col">
+            <label for="regClearance">Clearance</label>
+            <select id="regClearance" class="form-control">
+              <option value="Confidential" selected>Confidential</option>
+              <option value="Secret">Secret</option>
+              <option value="Top Secret">Top Secret</option>
+              <option value="Unclassified">Unclassified</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-block btn-lg" id="registerBtn">
+          <span>Create Account &amp; Log In</span>
+          <i class="fa-solid fa-user-check"></i>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APPLICATION LAYOUT -->
+  <div id="appContainer" class="app-layout" style="display: none;">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon-sm">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="sidebar-title">
+          <span class="brand-name">Data<span>Vault</span></span>
+          <span class="brand-badge">SECURE AUDITOR</span>
+        </div>
+      </div>
+
+      <!-- Current Logged In User Profile -->
+      <div class="sidebar-user-card">
+        <div class="avatar" id="sidebarAvatar">A</div>
+        <div class="user-meta">
+          <span class="user-display-name" id="sidebarUserName">Administrator</span>
+          <span class="user-role-badge" id="sidebarUserRole">SecOps Admin</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">CORE VAULT</div>
+        <a href="#dashboard" class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#files" class="nav-item" data-page="files" onclick="navigateTo('files')">
+          <i class="fa-solid fa-folder-tree"></i>
+          <span>Vault Files</span>
+          <span class="nav-pill" id="navFileCount">0</span>
+        </a>
+        <a href="#permissions" class="nav-item" data-page="permissions" onclick="navigateTo('permissions')">
+          <i class="fa-solid fa-key"></i>
+          <span>Access Permissions (ACL)</span>
+        </a>
+        <a href="#users" class="nav-item" data-page="users" onclick="navigateTo('users')">
+          <i class="fa-solid fa-users-gear"></i>
+          <span>User Directory</span>
+        </a>
+
+        <div class="nav-section-title">SECURITY &amp; AUDIT</div>
+        <a href="#logs" class="nav-item" data-page="logs" onclick="navigateTo('logs')">
+          <i class="fa-solid fa-list-check"></i>
+          <span>Access Audit Logs</span>
+          <span class="nav-pill" id="navLogCount">0</span>
+        </a>
+        <a href="#alerts" class="nav-item" data-page="alerts" onclick="navigateTo('alerts')">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>Security Alerts</span>
+          <span class="nav-pill pill-alert" id="navAlertCount">0</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="system-status-indicator">
+          <span class="status-dot online"></span>
+          <div class="status-texts">
+            <span class="status-main" id="systemEngineLabel">Live Cloudflare Tunnel</span>
+            <span class="status-sub" id="systemStorageLabel">Real Disk Storage Volume</span>
+          </div>
+        </div>
+        <button class="btn btn-outline-danger btn-sm btn-logout" onclick="handleLogout()">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-content">
+      <!-- TOP HEADER BAR -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="page-breadcrumbs">
+            <span class="breadcrumb-root">DataVault</span>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current" id="headerPageTitle">Dashboard</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="btn btn-sm btn-primary" onclick="openUploadModal()">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Upload File
+          </button>
+
+          <div class="header-time" id="clockDisplay">--:--:--</div>
+          <button class="btn-icon" title="Trigger Instant Refresh" onclick="refreshCurrentView()">
+            <i class="fa-solid fa-arrows-rotate"></i>
+          </button>
+          <div class="header-notifications" onclick="navigateTo('alerts')">
+            <button class="btn-icon">
+              <i class="fa-regular fa-bell"></i>
+              <span class="badge-dot" id="headerAlertDot" style="display: none;"></span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- VIEW CONTAINER -->
+      <div class="view-viewport">
+
+        <!-- ================= 1. DASHBOARD VIEW ================= -->
+        <section id="view-dashboard" class="view-page active">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Security &amp; File Access Overview</h1>
+              <p class="page-subtitle">Real-time monitoring of uploaded files, permissions, access attempts, and intrusion detection</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-outline" onclick="exportLogsCsv()">
+                <i class="fa-solid fa-file-csv"></i> Export Audit Trail
+              </button>
+              <button class="btn btn-primary" onclick="openUploadModal()">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Any File
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick 1-Click User Select for Easy Testing -->
+
+          <!-- METRICS CARDS -->
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-icon icon-blue">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Registered Users</span>
+                <span class="stat-value" id="statTotalUsers">0</span>
+                <span class="stat-subtext"><span class="text-success"><i class="fa-solid fa-check"></i> Active</span> user accounts</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon icon-indigo">
+                <i class="fa-solid fa-folder-open"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Stored Files</span>
+                <span class="stat-value" id="statTotalFiles">0</span>
+                <span class="stat-subtext"><span class="text-primary" id="statStorageDiskUsage"><i class="fa-solid fa-hard-drive"></i> Real Disk Storage</span></span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon icon-teal">
+                <i class="fa-solid fa-list-check"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Access Attempts</span>
+                <span class="stat-value" id="statTotalAttempts">0</span>
+                <span class="stat-subtext" id="statAttemptsSubtext">0 Allowed / 0 Denied</span>
+              </div>
+            </div>
+
+            <div class="stat-card stat-alert-card">
+              <div class="stat-icon icon-rose">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Security Alerts</span>
+                <span class="stat-value text-danger" id="statTotalAlerts">0</span>
+                <span class="stat-subtext" id="statAlertsSubtext">3+ consecutive failed strikes</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- VAULT FILES TABLE ON DASHBOARD -->
+          <div class="content-card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title"><i class="fa-solid fa-folder-tree text-primary"></i> Stored Vault Files</h3>
+                <p class="card-subtitle">Real physical files on disk with SHA-256 integrity, permissions, and download</p>
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="openUploadModal()"><i class="fa-solid fa-plus"></i> Upload New File</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>File</th>
+                    <th>Owner (Uploader)</th>
+                    <th>Access Policy</th>
+                    <th>Size</th>
+                    <th>SHA-256 Hash</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardFilesBody">
+                  <tr><td colspan="6" class="empty-state">Loading vault files...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUMMARY SECTION: 2 COLUMNS -->
+          <div class="dashboard-split-grid">
+            <!-- RECENT ACCESS AUDIT -->
+            <div class="content-card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title"><i class="fa-solid fa-clock-rotate-left text-primary"></i> Recent Access Logs</h3>
+                  <p class="card-subtitle">Real-time audit log of access attempts</p>
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="navigateTo('logs')">View All Logs</button>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>User</th>
+                      <th>File</th>
+                      <th>Action</th>
+                      <th>Outcome</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboardRecentLogsBody">
+                    <tr><td colspan="5" class="empty-state">No access records recorded yet.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- RECENT INTRUSION ALERTS -->
+            <div class="content-card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title"><i class="fa-solid fa-bell-slash text-danger"></i> Active Security Alerts</h3>
+                  <p class="card-subtitle">Triggered automatically on 3 failed attempts</p>
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="navigateTo('alerts')">Manage Alerts</button>
+              </div>
+              <div class="alerts-stream" id="dashboardRecentAlertsBody">
+                <div class="empty-state">No active security alerts. System normal.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 2. FILE MANAGEMENT / VAULT STORAGE VIEW ================= -->
+        <section id="view-files" class="view-page">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">File Management &amp; Storage Vault</h1>
+              <p class="page-subtitle">Upload any file (PDF, Excel, Word, Images, Code). The uploader is the Owner and controls who can access it.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openUploadModal()">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Upload File
+            </button>
+          </div>
+
+          <div class="content-card">
+            <div class="card-header">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="fileSearchInput" placeholder="Filter by filename, owner, or policy..." oninput="renderFilesTable()">
+              </div>
+              <div class="card-actions">
+                <span class="counter-tag"><strong id="fileTableCount">0</strong> files on storage disk</span>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>File</th>
+                    <th>File Owner</th>
+                    <th>Access Policy</th>
+                    <th>Size</th>
+                    <th>SHA-256 Hash</th>
+                    <th>Last Modified</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="filesTableBody">
+                  <tr><td colspan="7" class="empty-state">Loading vault files...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 3. FILE PERMISSIONS (ACL) VIEW ================= -->
+        <section id="view-permissions" class="view-page">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">File Permissions (ACL Matrix)</h1>
+              <p class="page-subtitle">Explicit Read (R), Write (W), and Execute (X) permissions granted to users</p>
+            </div>
+            <button class="btn btn-primary" onclick="openCreatePermissionModal()">
+              <i class="fa-solid fa-key"></i> Grant Specific Permission
+            </button>
+          </div>
+
+          <div class="content-card">
+            <div class="card-header">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="permissionSearchInput" placeholder="Search by user or file..." oninput="renderPermissionsTable()">
+              </div>
+              <div class="card-actions">
+                <span class="counter-tag"><strong id="permissionTableCount">0</strong> active permission rules</span>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>File</th>
+                    <th>Read (R)</th>
+                    <th>Write (W)</th>
+                    <th>Execute (X)</th>
+                    <th>Permission Mask</th>
+                    <th>Granted By</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="permissionsTableBody">
+                  <tr><td colspan="8" class="empty-state">Loading permissions...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 4. USER MANAGEMENT VIEW ================= -->
+        <section id="view-users" class="view-page">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">User Directory</h1>
+              <p class="page-subtitle">All registered users. Anyone can create an account or be added here.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openCreateUserModal()">
+              <i class="fa-solid fa-user-plus"></i> Add New User
+            </button>
+          </div>
+
+          <div class="content-card">
+            <div class="card-header">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="userSearchInput" placeholder="Filter by username, department, or clearance..." oninput="renderUsersTable()">
+              </div>
+              <div class="card-actions">
+                <span class="counter-tag"><strong id="userTableCount">0</strong> users registered</span>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Full Name</th>
+                    <th>Department</th>
+                    <th>Clearance</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                  <tr><td colspan="7" class="empty-state">Loading users...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 5. ACCESS LOGS VIEW ================= -->
+        <section id="view-logs" class="view-page">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Access Audit Logs</h1>
+              <p class="page-subtitle">Complete chronological record of all file access attempts, allowed or denied</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-outline" onclick="exportLogsCsv()">
+                <i class="fa-solid fa-file-csv"></i> Export CSV
+              </button>
+              <button class="btn btn-outline-danger" onclick="clearLogsConfirm()">
+                <i class="fa-regular fa-trash-can"></i> Clear Logs
+              </button>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="card-header flex-wrap">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="logsSearchInput" placeholder="Search by user, file, outcome, or IP..." oninput="renderLogsTable()">
+              </div>
+
+              <div class="filter-controls">
+                <select id="logFilterResult" class="form-control form-control-sm" onchange="renderLogsTable()">
+                  <option value="ALL">All Outcomes</option>
+                  <option value="ALLOWED">Allowed Only</option>
+                  <option value="DENIED">Denied Only</option>
+                </select>
+
+                <select id="logFilterAction" class="form-control form-control-sm" onchange="renderLogsTable()">
+                  <option value="ALL">All Actions</option>
+                  <option value="READ">Read</option>
+                  <option value="WRITE">Write</option>
+                  <option value="EXECUTE">Execute</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Log ID</th>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>File</th>
+                    <th>Action</th>
+                    <th>Result</th>
+                    <th>Client IP</th>
+                    <th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody id="logsTableBody">
+                  <tr><td colspan="8" class="empty-state">Loading access audit logs...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-footer">
+              <span id="logsPaginationInfo">Showing 0 entries</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 6. SECURITY ALERTS VIEW ================= -->
+        <section id="view-alerts" class="view-page">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Security &amp; Intrusion Alerts</h1>
+              <p class="page-subtitle">Automatically triggered when a user fails 3 consecutive access attempts on the same file</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-outline-danger" onclick="clearAlertsConfirm()">
+                <i class="fa-regular fa-trash-can"></i> Clear Alerts
+              </button>
+            </div>
+          </div>
+
+          <div class="alert-stats-strip">
+            <div class="strip-item">
+              <span class="strip-label">Total Alerts</span>
+              <span class="strip-val" id="alertCountTotal">0</span>
+            </div>
+            <div class="strip-item">
+              <span class="strip-label">Active / Open</span>
+              <span class="strip-val text-danger" id="alertCountActive">0</span>
+            </div>
+            <div class="strip-item">
+              <span class="strip-label">Investigating</span>
+              <span class="strip-val text-warning" id="alertCountInvestigating">0</span>
+            </div>
+            <div class="strip-item">
+              <span class="strip-label">Resolved</span>
+              <span class="strip-val text-success" id="alertCountResolved">0</span>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="card-header">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="alertsSearchInput" placeholder="Filter alerts by user, file, status, or severity..." oninput="renderAlertsTable()">
+              </div>
+              <div class="filter-controls">
+                <select id="alertFilterStatus" class="form-control form-control-sm" onchange="renderAlertsTable()">
+                  <option value="ALL">All Statuses</option>
+                  <option value="ACTIVE">ACTIVE</option>
+                  <option value="INVESTIGATING">INVESTIGATING</option>
+                  <option value="RESOLVED">RESOLVED</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Alert ID</th>
+                    <th>Detected At</th>
+                    <th>User</th>
+                    <th>Target File</th>
+                    <th>Strikes</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>Incident Details</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="alertsTableBody">
+                  <tr><td colspan="9" class="empty-state">No security incidents detected.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div> <!-- /view-viewport -->
+    </main>
+  </div> <!-- /appContainer -->
+
+  <!-- ==================== UNIVERSAL FILE UPLOAD MODAL ==================== -->
+  <div id="uploadFileModal" class="modal-backdrop">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3><i class="fa-solid fa-cloud-arrow-up text-primary"></i> Upload File to DataVault</h3>
+          <span class="modal-subtitle">Upload any file type (PDF, Excel, Word, Images, Text, Code)</span>
+        </div>
+        <button class="btn-close" onclick="closeModal('uploadFileModal')">&times;</button>
+      </div>
+
+      <form id="uploadFileForm" onsubmit="handleUniversalFileUpload(event)">
+        <div class="modal-body">
+          <!-- Drag & Drop / File Browser Area -->
+          <div class="dropzone" id="fileDropZone" onclick="document.getElementById('fileUploadInput').click()">
+            <i class="fa-solid fa-file-arrow-up dropzone-icon"></i>
+            <h4>Choose a file or drag &amp; drop it here</h4>
+            <p>Supports all types: <code>.pdf</code>, <code>.xlsx</code>, <code>.docx</code>, <code>.png</code>, <code>.jpg</code>, <code>.csv</code>, <code>.txt</code>, <code>.zip</code>, etc.</p>
+            <input type="file" id="fileUploadInput" style="display: none;" onchange="handleFileSelected(event)">
+            <div id="selectedFilePreview" class="selected-file-badge" style="display: none;">
+              <i class="fa-solid fa-paperclip"></i> <span id="selectedFileName">No file chosen</span> (<span id="selectedFileSize">0 KB</span>)
+            </div>
+          </div>
+
+          <!-- File Name & Owner Details -->
+          <div class="form-row" style="margin-top: 16px;">
+            <div class="form-group col">
+              <label for="uploadCustomFilename">Filename on Vault *</label>
+              <input type="text" id="uploadCustomFilename" class="form-control" placeholder="e.g. annual_report.pdf" required>
+            </div>
+            <div class="form-group col">
+              <label for="uploadOwnerDisplay">File Owner (Uploader)</label>
+              <input type="text" id="uploadOwnerDisplay" class="form-control" readonly style="background: #f1f5f9; font-weight: 700;">
+            </div>
+          </div>
+
+          <!-- Access Policy (Who Can View/Access) -->
+          <div class="form-group">
+            <label><i class="fa-solid fa-shield-halved"></i> Who can access this file? (Access Policy) *</label>
+            <div class="access-policy-options">
+              <label class="policy-card">
+                <input type="radio" name="uploadAccessPolicy" value="PUBLIC" onchange="togglePolicyFields()">
+                <div class="policy-card-body">
+                  <div class="policy-title"><i class="fa-solid fa-earth-americas text-primary"></i> Public</div>
+                  <div class="policy-desc">Any logged in user can view and download this file.</div>
+                </div>
+              </label>
+
+              <label class="policy-card">
+                <input type="radio" name="uploadAccessPolicy" value="CONFIDENTIAL" checked onchange="togglePolicyFields()">
+                <div class="policy-card-body">
+                  <div class="policy-title"><i class="fa-solid fa-lock text-warning"></i> Confidential (Clearance)</div>
+                  <div class="policy-desc">Users must hold matching security clearance level.</div>
+                </div>
+              </label>
+
+              <label class="policy-card">
+                <input type="radio" name="uploadAccessPolicy" value="SPECIFIC_USERS" onchange="togglePolicyFields()">
+                <div class="policy-card-body">
+                  <div class="policy-title"><i class="fa-solid fa-user-lock text-danger"></i> Specific Users Only</div>
+                  <div class="policy-desc">Only you and users you specifically choose can view.</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Dynamic: Clearance Selector (shown when Confidential selected) -->
+          <div class="form-group" id="policyClearanceGroup">
+            <label for="uploadClassification">Minimum Required Clearance</label>
+            <select id="uploadClassification" class="form-control">
+              <option value="Top Secret">Top Secret (Highest clearance only)</option>
+              <option value="Secret">Secret (Secret &amp; Top Secret)</option>
+              <option value="Confidential" selected>Confidential (Standard confidential clearance)</option>
+              <option value="Public">Public (Any clearance)</option>
+            </select>
+          </div>
+
+          <!-- Dynamic: Specific Users Selector (shown when Specific Users selected) -->
+          <div class="form-group" id="policySpecificUsersGroup" style="display: none;">
+            <label for="uploadAllowedUsers"><i class="fa-solid fa-users"></i> Select Users Allowed to Access</label>
+            <select id="uploadAllowedUsers" class="form-control" multiple size="4">
+              <!-- Populated dynamically -->
+            </select>
+            <small class="text-muted">Hold Ctrl (or Cmd) to select multiple users who are permitted to access this file.</small>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label for="uploadDescription">Description / Notes</label>
+            <input type="text" id="uploadDescription" class="form-control" placeholder="What is this file for?">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('uploadFileModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-lg" id="btnSubmitUpload">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Upload &amp; Secure File
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== REAL FILE EDITOR & PREVIEW MODAL ==================== -->
+  <div id="fileEditorModal" class="modal-backdrop">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 id="editorModalTitle"><i class="fa-regular fa-file-code text-primary"></i> File Content Inspector</h3>
+          <span class="modal-subtitle mono" id="editorFilePath">storage/vault/...</span>
+        </div>
+        <button class="btn-close" onclick="closeModal('fileEditorModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="file-editor-meta-bar">
+          <div>
+            <span class="badge badge-info" id="editorFileClassification">Confidential</span>
+            <span class="meta-item"><i class="fa-solid fa-user"></i> Owner: <strong id="editorFileOwner">--</strong></span>
+            <span class="meta-item"><i class="fa-solid fa-fingerprint"></i> SHA-256: <strong id="editorFileChecksum" class="mono">--</strong></span>
+            <span class="meta-item"><i class="fa-solid fa-weight-scale"></i> Size: <strong id="editorFileSize">--</strong></span>
+          </div>
+          <div>
+            <button class="btn btn-sm btn-primary" id="btnDownloadFromEditor" onclick="downloadCurrentFile()">
+              <i class="fa-solid fa-download"></i> Download File
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label for="editorFileContent">File Content</label>
+          <textarea id="editorFileContent" class="form-control mono file-editor-textarea" rows="12" placeholder="File content..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('fileEditorModal')">Close</button>
+        <button type="button" class="btn btn-primary" id="btnSaveFileContent" onclick="saveCurrentFileContent()">
+          <i class="fa-regular fa-floppy-disk"></i> Save Changes to Disk
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANAGE ACCESS POLICY MODAL (FOR FILE OWNER) -->
+  <div id="managePolicyModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 id="managePolicyTitle">Manage File Access Policy</h3>
+          <span class="modal-subtitle" id="managePolicySubtitle">Only the file owner can change this</span>
+        </div>
+        <button class="btn-close" onclick="closeModal('managePolicyModal')">&times;</button>
+      </div>
+      <form id="managePolicyForm" onsubmit="saveManagePolicyForm(event)">
+        <input type="hidden" id="mpFileId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Access Policy</label>
+            <select id="mpAccessPolicy" class="form-control" onchange="toggleManagePolicyFields()">
+              <option value="PUBLIC">Public - Anyone can access</option>
+              <option value="CONFIDENTIAL">Confidential - Based on clearance level</option>
+              <option value="SPECIFIC_USERS">Specific Users Only - Only chosen users</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="mpClearanceGroup">
+            <label for="mpClassification">Classification Level</label>
+            <select id="mpClassification" class="form-control">
+              <option value="Top Secret">Top Secret</option>
+              <option value="Secret">Secret</option>
+              <option value="Confidential">Confidential</option>
+              <option value="Public">Public</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="mpSpecificUsersGroup" style="display: none;">
+            <label for="mpAllowedUsers">Allowed Users</label>
+            <select id="mpAllowedUsers" class="form-control" multiple size="4">
+              <!-- Populated dynamically -->
+            </select>
+            <small class="text-muted">Hold Ctrl/Cmd to select allowed users</small>
+          </div>
+
+          <div class="form-group">
+            <label for="mpDescription">Description</label>
+            <input type="text" id="mpDescription" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('managePolicyModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Policy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- USER MODAL (ADD USER) -->
+  <div id="userModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="userModalTitle">Add New User</h3>
+        <button class="btn-close" onclick="closeModal('userModal')">&times;</button>
+      </div>
+      <form id="userForm" onsubmit="saveUserForm(event)">
+        <input type="hidden" id="userFormId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="uFormUsername">Username *</label>
+            <input type="text" id="uFormUsername" class="form-control" placeholder="e.g. john" required>
+          </div>
+          <div class="form-group">
+            <label for="uFormFullname">Full Name *</label>
+            <input type="text" id="uFormFullname" class="form-control" placeholder="e.g. John Doe" required>
+          </div>
+          <div class="form-group">
+            <label for="uFormPassword">Password *</label>
+            <input type="password" id="uFormPassword" class="form-control" placeholder="Password (default: 123)" value="123">
+          </div>
+          <div class="form-row">
+            <div class="form-group col">
+              <label for="uFormRole">Role</label>
+              <input type="text" id="uFormRole" class="form-control" placeholder="e.g. Analyst, Engineer" value="Member">
+            </div>
+            <div class="form-group col">
+              <label for="uFormDept">Department</label>
+              <input type="text" id="uFormDept" class="form-control" placeholder="e.g. Finance" value="General">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col">
+              <label for="uFormClearance">Clearance</label>
+              <select id="uFormClearance" class="form-control">
+                <option value="Top Secret">Top Secret</option>
+                <option value="Secret">Secret</option>
+                <option value="Confidential" selected>Confidential</option>
+                <option value="Unclassified">Unclassified</option>
+              </select>
+            </div>
+            <div class="form-group col">
+              <label for="uFormStatus">Account Status</label>
+              <select id="uFormStatus" class="form-control">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="SUSPENDED">SUSPENDED</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('userModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveUser">Save User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- PERMISSION MODAL (ADD / EDIT SPECIFIC RULE) -->
+  <div id="permissionModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="permissionModalTitle">Grant Specific Access Permission</h3>
+        <button class="btn-close" onclick="closeModal('permissionModal')">&times;</button>
+      </div>
+      <form id="permissionForm" onsubmit="savePermissionForm(event)">
+        <input type="hidden" id="permFormId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="pFormUser">Select User *</label>
+            <select id="pFormUser" class="form-control" required>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pFormFile">Select Target File *</label>
+            <select id="pFormFile" class="form-control" required>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Permission Flags</label>
+            <div class="checkbox-flag-group">
+              <label class="flag-toggle">
+                <input type="checkbox" id="pFormRead" checked>
+                <span class="flag-custom"></span>
+                <span class="flag-text"><strong>Read (R)</strong> - Allow viewing, inspecting, and downloading</span>
+              </label>
+
+              <label class="flag-toggle">
+                <input type="checkbox" id="pFormWrite">
+                <span class="flag-custom"></span>
+                <span class="flag-text"><strong>Write (W)</strong> - Allow modifying and editing content on disk</span>
+              </label>
+
+              <label class="flag-toggle">
+                <input type="checkbox" id="pFormExecute">
+                <span class="flag-custom"></span>
+                <span class="flag-text"><strong>Execute (X)</strong> - Allow running file as system routine</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('permissionModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSavePermission">Enforce Permission</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ALERT STATUS UPDATE MODAL -->
+  <div id="alertModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Update Incident Status</h3>
+        <button class="btn-close" onclick="closeModal('alertModal')">&times;</button>
+      </div>
+      <form id="alertForm" onsubmit="saveAlertStatusForm(event)">
+        <input type="hidden" id="aFormId">
+        <div class="modal-body">
+          <div class="alert-incident-summary" id="aFormSummary"></div>
+          <div class="form-group">
+            <label for="aFormStatus">Incident Status</label>
+            <select id="aFormStatus" class="form-control" required>
+              <option value="ACTIVE">ACTIVE - Unresolved Intrusion Threat</option>
+              <option value="INVESTIGATING">INVESTIGATING - Threat Review In Progress</option>
+              <option value="RESOLVED">RESOLVED - Threat Mitigated / Cleared</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="aFormNotes">Investigation Commentary</label>
+            <textarea id="aFormNotes" class="form-control" rows="3" placeholder="Add resolution note..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('alertModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Status</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

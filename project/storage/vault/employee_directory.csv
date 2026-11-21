@@ -1,0 +1,5 @@
+ID,FullName,Department,Clearance,Email
+E-101,Administrator,SecOps,Top Secret,admin@datavault.internal
+E-102,Alice Johnson,Engineering,Secret,alice@datavault.internal
+E-103,Bob Vance,Finance,Confidential,bob@datavault.internal
+E-104,Sarah Connor,SecOps,Top Secret,sarah@datavault.internal

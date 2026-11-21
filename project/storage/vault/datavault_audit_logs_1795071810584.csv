@@ -1,0 +1,11 @@
+Log ID,Timestamp,Username,Filename,Action,Result,Client IP,Reason
+"1001","2026-11-18 21:50:07","alice_dev","app_backend_source.tar.gz","READ","ALLOWED","192.168.1.102","Granted by role permissions"
+"1002","2026-11-18 21:50:07","bobbbbbbbbbbbbbbbbbbbbbbbbbbb"
+"1003","2026-11-18 21:50:07","admin","system_kernel_patch.sh","EXECUTE","ALLOWED","127.0.0.1","Admin full privilege access"
+"1004","2026-11-18 22:07:52","guest_user","classified_defense_blueprint.pdf","WRITE","DENIED","127.0.0.1","No permission rule foud for user on file (Default Deny)"
+"1005","2026-11-18 22:07:52","guest_user","classified_defense_blueprint.pdf","WRITE","DENIED","127.0.0.1","No permission rule found for user on file (Default Deny)"
+"1006","2026-11-18 22:07:52","guest_user","classified_defense_blueprint.pdf","WRITE","DENIED","127.0.0.1","No permission rule found for user on file (Default Deny)"
+"1007","2026-11-18 23:04:45","admin","financial_audit_2026.xlsx","READ","ALLOWED","127.0.0.1","Administrator Root Security Clearance Override"
+"1008","2026-11-19 12:28:07","guest_user","financial_audit_2026.xlsx","EXECUTE","DENIED","127.0.0.1","Default Deny: No explicit ACL assigned for @guest_user on ""financial_audit_2026.xlsx"""
+"1009","2026-11-19 12:28:14","admin","financial_audit_2026.xlsx","EXECUTE","ALLOWED","127.0.0.1","Administrator Root Security Clearance Override"
+"1010","2026-11-19 12:28:18","admin","financial_audit_2026.xlsx","READ","ALLOWED","127.0.0.1","Administrator Root Security Clearance Override"

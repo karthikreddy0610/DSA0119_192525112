@@ -1,0 +1,501 @@
+{
+  "users": [
+    {
+      "id": "101",
+      "username": "admin",
+      "fullname": "Administrator",
+      "role": "Admin",
+      "department": "SecOps",
+      "clearance": "Top Secret",
+      "status": "ACTIVE",
+      "createdAt": "2026-11-18 21:50:07",
+      "password": "123"
+    },
+    {
+      "id": "102",
+      "username": "alice_dev",
+      "fullname": "Alice Johnson",
+      "role": "Developer",
+      "department": "Engineering",
+      "clearance": "Secret",
+      "status": "ACTIVE",
+      "createdAt": "2026-11-18 21:50:07",
+      "password": "123"
+    },
+    {
+      "id": "103",
+      "username": "bob_analyst",
+      "fullname": "Bob Vance",
+      "role": "Analyst",
+      "department": "Finance",
+      "clearance": "Confidential",
+      "status": "ACTIVE",
+      "createdAt": "2026-11-18 21:50:07",
+      "password": "123"
+    },
+    {
+      "id": "104",
+      "username": "sarah_sec",
+      "fullname": "Sarah Connor",
+      "role": "Security Officer",
+      "department": "SecOps",
+      "clearance": "Top Secret",
+      "status": "ACTIVE",
+      "createdAt": "2026-11-18 21:50:07",
+      "password": "123"
+    },
+    {
+      "id": "105",
+      "username": "guest_user",
+      "fullname": "Guest Contractor",
+      "role": "Guest",
+      "department": "External",
+      "clearance": "Unclassified",
+      "status": "ACTIVE",
+      "createdAt": "2026-11-18 21:50:07",
+      "password": "123"
+    },
+    {
+      "id": "106",
+      "username": "jhon",
+      "password": "1234",
+      "fullname": "JO",
+      "role": "Member",
+      "department": "Engineering",
+      "clearance": "Confidential",
+      "status": "ACTIVE",
+      "createdAt": "2026-11-19 13:14:26"
+    }
+  ],
+  "files": [
+    {
+      "id": "201",
+      "filename": "financial_audit_2026.xlsx",
+      "path": "/vault/finance/financial_audit_2026.xlsx",
+      "classification": "Confidential",
+      "owner": "bob_analyst",
+      "size": "4.2 MB",
+      "description": "Q3 Internal revenue and budget audit",
+      "updatedAt": "2026-11-18 21:50:07",
+      "accessPolicy": "CONFIDENTIAL",
+      "allowedUsers": [
+        "bob_analyst"
+      ]
+    },
+    {
+      "id": "202",
+      "filename": "classified_defense_blueprint.pdf",
+      "path": "/vault/defense/classified_defense_blueprint.pdf",
+      "classification": "Top Secret",
+      "owner": "sarah_sec",
+      "size": "18.5 MB",
+      "description": "Restricted schematics & access keys",
+      "updatedAt": "2026-11-18 21:50:07",
+      "accessPolicy": "CONFIDENTIAL",
+      "allowedUsers": [
+        "sarah_sec"
+      ]
+    },
+    {
+      "id": "203",
+      "filename": "app_backend_source.tar.gz",
+      "path": "/vault/engineering/app_backend_source.tar.gz",
+      "classification": "Secret",
+      "owner": "alice_dev",
+      "size": "52.1 MB",
+      "description": "Core infrastructure server code",
+      "updatedAt": "2026-11-18 21:50:07",
+      "accessPolicy": "CONFIDENTIAL",
+      "allowedUsers": [
+        "alice_dev"
+      ]
+    },
+    {
+      "id": "204",
+      "filename": "employee_directory.csv",
+      "path": "/vault/hr/employee_directory.csv",
+      "classification": "Public",
+      "owner": "admin",
+      "size": "680 KB",
+      "description": "Company roster and public contact emails",
+      "updatedAt": "2026-11-18 21:50:07",
+      "accessPolicy": "PUBLIC",
+      "allowedUsers": [
+        "admin"
+      ]
+    },
+    {
+      "id": "205",
+      "filename": "system_kernel_patch.sh",
+      "path": "/vault/ops/system_kernel_patch.sh",
+      "classification": "Secret",
+      "owner": "admin",
+      "size": "120 KB",
+      "description": "Automated deployment script",
+      "updatedAt": "2026-11-18 21:50:07",
+      "accessPolicy": "CONFIDENTIAL",
+      "allowedUsers": [
+        "admin"
+      ]
+    },
+    {
+      "id": "206",
+      "filename": "datavault_audit_logs_1795071810584.csv",
+      "path": "storage/vault/datavault_audit_logs_1795071810584.csv",
+      "classification": "Confidential",
+      "accessPolicy": "PUBLIC",
+      "allowedUsers": [
+        "guest_user"
+      ],
+      "owner": "guest_user",
+      "size": "1.46 KB",
+      "mimeType": "text/csv; charset=utf-8",
+      "checksum": "b3ed24af6ff7e792",
+      "description": "somthing",
+      "updatedAt": "2026-11-19 13:12:47"
+    },
+    {
+      "id": "207",
+      "filename": "Capstone Project Report.pdf",
+      "path": "storage/vault/Capstone Project Report.pdf",
+      "classification": "Confidential",
+      "accessPolicy": "SPECIFIC_USERS",
+      "allowedUsers": [
+        "admin",
+        "jhon",
+        "alice_dev"
+      ],
+      "owner": "alice_dev",
+      "size": "510.26 KB",
+      "mimeType": "application/pdf",
+      "checksum": "b5f049af68585e14",
+      "description": "Uploaded by @alice_dev",
+      "updatedAt": "2026-11-21 08:55:25"
+    }
+  ],
+  "permissions": [
+    {
+      "id": "301",
+      "username": "admin",
+      "filename": "financial_audit_2026.xlsx",
+      "canRead": true,
+      "canWrite": true,
+      "canExecute": true,
+      "grantedBy": "admin",
+      "updatedAt": "2026-11-19 13:15:39"
+    },
+    {
+      "id": "302",
+      "username": "admin",
+      "filename": "classified_defense_blueprint.pdf",
+      "canRead": true,
+      "canWrite": true,
+      "canExecute": true,
+      "grantedBy": "system",
+      "updatedAt": "2026-11-18 21:50:07"
+    },
+    {
+      "id": "303",
+      "username": "admin",
+      "filename": "app_backend_source.tar.gz",
+      "canRead": true,
+      "canWrite": true,
+      "canExecute": true,
+      "grantedBy": "system",
+      "updatedAt": "2026-11-18 21:50:07"
+    },
+    {
+      "id": "304",
+      "username": "alice_dev",
+      "filename": "app_backend_source.tar.gz",
+      "canRead": true,
+      "canWrite": true,
+      "canExecute": false,
+      "grantedBy": "admin",
+      "updatedAt": "2026-11-18 21:50:07"
+    },
+    {
+      "id": "305",
+      "username": "alice_dev",
+      "filename": "system_kernel_patch.sh",
+      "canRead": true,
+      "canWrite": false,
+      "canExecute": true,
+      "grantedBy": "admin",
+      "updatedAt": "2026-11-18 21:50:07"
+    },
+    {
+      "id": "306",
+      "username": "bob_analyst",
+      "filename": "financial_audit_2026.xlsx",
+      "canRead": true,
+      "canWrite": true,
+      "canExecute": false,
+      "grantedBy": "admin",
+      "updatedAt": "2026-11-18 21:50:07"
+    },
+    {
+      "id": "307",
+      "username": "sarah_sec",
+      "filename": "classified_defense_blueprint.pdf",
+      "canRead": true,
+      "canWrite": true,
+      "canExecute": false,
+      "grantedBy": "admin",
+      "updatedAt": "2026-11-18 21:50:07"
+    },
+    {
+      "id": "308",
+      "username": "guest_user",
+      "filename": "employee_directory.csv",
+      "canRead": true,
+      "canWrite": false,
+      "canExecute": false,
+      "grantedBy": "admin",
+      "updatedAt": "2026-11-18 21:50:07"
+    },
+    {
+      "id": "309",
+      "username": "guest_user",
+      "filename": "datavault_audit_logs_1795071810584.csv",
+      "canRead": true,
+      "canWrite": true,
+      "canExecute": true,
+      "grantedBy": "uploader",
+      "updatedAt": "2026-11-19 13:11:53"
+    },
+    {
+      "id": "310",
+      "username": "jhon",
+      "filename": "financial_audit_2026.xlsx",
+      "canRead": true,
+      "canWrite": false,
+      "canExecute": false,
+      "grantedBy": "admin",
+      "updatedAt": "2026-11-19 13:15:48"
+    },
+    {
+      "id": "311",
+      "username": "alice_dev",
+      "filename": "Capstone Project Report.pdf",
+      "canRead": true,
+      "canWrite": true,
+      "canExecute": true,
+      "grantedBy": "uploader",
+      "updatedAt": "2026-11-21 08:55:25"
+    }
+  ],
+  "logs": [
+    {
+      "id": "1021",
+      "timestamp": "2026-11-21 08:56:18",
+      "username": "admin",
+      "filename": "Capstone Project Report.pdf",
+      "action": "READ",
+      "result": "ALLOWED",
+      "clientIp": "127.0.0.1",
+      "reason": "Administrator Root Clearance Override"
+    },
+    {
+      "id": "1020",
+      "timestamp": "2026-11-21 08:56:04",
+      "username": "bob_analyst",
+      "filename": "Capstone Project Report.pdf",
+      "action": "READ",
+      "result": "DENIED",
+      "clientIp": "127.0.0.1",
+      "reason": "Access Denied: This file is restricted to specific users authorized by @alice_dev"
+    },
+    {
+      "id": "1019",
+      "timestamp": "2026-11-21 08:55:59",
+      "username": "bob_analyst",
+      "filename": "Capstone Project Report.pdf",
+      "action": "READ",
+      "result": "DENIED",
+      "clientIp": "127.0.0.1",
+      "reason": "Access Denied: This file is restricted to specific users authorized by @alice_dev"
+    },
+    {
+      "id": "1018",
+      "timestamp": "2026-11-21 08:55:41",
+      "username": "alice_dev",
+      "filename": "Capstone Project Report.pdf",
+      "action": "READ",
+      "result": "ALLOWED",
+      "clientIp": "127.0.0.1",
+      "reason": "Authorized: @alice_dev is the verified Owner of this file"
+    },
+    {
+      "id": "1017",
+      "timestamp": "2026-11-21 08:41:14",
+      "username": "alice_dev",
+      "filename": "test.txt",
+      "action": "READ",
+      "result": "DENIED",
+      "clientIp": "127.0.0.1",
+      "reason": "test failure"
+    },
+    {
+      "id": "1001",
+      "timestamp": "2026-11-18 21:50:07",
+      "username": "alice_dev",
+      "filename": "app_backend_source.tar.gz",
+      "action": "READ",
+      "result": "ALLOWED",
+      "clientIp": "192.168.1.102",
+      "reason": "Granted by role permissions"
+    },
+    {
+      "id": "1002",
+      "timestamp": "2026-11-18 21:50:07",
+      "username": "bob_analyst",
+      "filename": "classified_defense_blueprint.pdf",
+      "action": "READ",
+      "result": "DENIED",
+      "clientIp": "192.168.1.103",
+      "reason": "Insufficient clearance & missing rule"
+    },
+    {
+      "id": "1003",
+      "timestamp": "2026-11-18 21:50:07",
+      "username": "admin",
+      "filename": "system_kernel_patch.sh",
+      "action": "EXECUTE",
+      "result": "ALLOWED",
+      "clientIp": "127.0.0.1",
+      "reason": "Admin full privilege access"
+    },
+    {
+      "id": "1004",
+      "timestamp": "2026-11-18 22:07:52",
+      "username": "guest_user",
+      "filename": "classified_defense_blueprint.pdf",
+      "action": "WRITE",
+      "result": "DENIED",
+      "clientIp": "127.0.0.1",
+      "reason": "No permission rule found for user on file (Default Deny)"
+    },
+    {
+      "id": "1005",
+      "timestamp": "2026-11-18 22:07:52",
+      "username": "guest_user",
+      "filename": "classified_defense_blueprint.pdf",
+      "action": "WRITE",
+      "result": "DENIED",
+      "clientIp": "127.0.0.1",
+      "reason": "No permission rule found for user on file (Default Deny)"
+    },
+    {
+      "id": "1006",
+      "timestamp": "2026-11-18 22:07:52",
+      "username": "guest_user",
+      "filename": "classified_defense_blueprint.pdf",
+      "action": "WRITE",
+      "result": "DENIED",
+      "clientIp": "127.0.0.1",
+      "reason": "No permission rule found for user on file (Default Deny)"
+    },
+    {
+      "id": "1007",
+      "timestamp": "2026-11-18 23:04:45",
+      "username": "admin",
+      "filename": "financial_audit_2026.xlsx",
+      "action": "READ",
+      "result": "ALLOWED",
+      "clientIp": "127.0.0.1",
+      "reason": "Administrator Root Security Clearance Override"
+    },
+    {
+      "id": "1008",
+      "timestamp": "2026-11-19 12:28:07",
+      "username": "guest_user",
+      "filename": "financial_audit_2026.xlsx",
+      "action": "EXECUTE",
+      "result": "DENIED",
+      "clientIp": "127.0.0.1",
+      "reason": "Default Deny: No explicit ACL assigned for @guest_user on \"financial_audit_2026.xlsx\""
+    },
+    {
+      "id": "1009",
+      "timestamp": "2026-11-19 12:28:14",
+      "username": "admin",
+      "filename": "financial_audit_2026.xlsx",
+      "action": "EXECUTE",
+      "result": "ALLOWED",
+      "clientIp": "127.0.0.1",
+      "reason": "Administrator Root Security Clearance Override"
+    },
+    {
+      "id": "1010",
+      "timestamp": "2026-11-19 12:28:18",
+      "username": "admin",
+      "filename": "financial_audit_2026.xlsx",
+      "action": "READ",
+      "result": "ALLOWED",
+      "clientIp": "127.0.0.1",
+      "reason": "Administrator Root Security Clearance Override"
+    },
+    {
+      "id": "1011",
+      "timestamp": "2026-11-19 12:34:10",
+      "username": "admin",
+      "filename": "financial_audit_2026.xlsx",
+      "action": "EXECUTE",
+      "result": "ALLOWED",
+      "clientIp": "2401:4900:cd67:10bb:9d82:67d2:933c:4e7d",
+      "reason": "Administrator Root Security Clearance Override"
+    },
+    {
+      "id": "1012",
+      "timestamp": "2026-11-19 12:34:24",
+      "username": "admin",
+      "filename": "financial_audit_2026.xlsx",
+      "action": "READ",
+      "result": "ALLOWED",
+      "clientIp": "2401:4900:cd67:10bb:9d82:67d2:933c:4e7d",
+      "reason": "File download: Administrator Root Security Clearance Override"
+    },
+    {
+      "id": "1013",
+      "timestamp": "2026-11-19 12:34:27",
+      "username": "admin",
+      "filename": "financial_audit_2026.xlsx",
+      "action": "READ",
+      "result": "ALLOWED",
+      "clientIp": "2401:4900:cd67:10bb:9d82:67d2:933c:4e7d",
+      "reason": "File download: Administrator Root Security Clearance Override"
+    },
+    {
+      "id": "1014",
+      "timestamp": "2026-11-19 13:12:14",
+      "username": "admin",
+      "filename": "datavault_audit_logs_1795071810584.csv",
+      "action": "READ",
+      "result": "ALLOWED",
+      "clientIp": "2401:4900:6270:c419:19d:700e:9f66:9a32",
+      "reason": "Administrator Root Clearance Override"
+    },
+    {
+      "id": "1015",
+      "timestamp": "2026-11-19 13:12:47",
+      "username": "admin",
+      "filename": "datavault_audit_logs_1795071810584.csv",
+      "action": "WRITE",
+      "result": "ALLOWED",
+      "clientIp": "2401:4900:6270:c419:19d:700e:9f66:9a32",
+      "reason": "Administrator Root Clearance Override"
+    },
+    {
+      "id": "1016",
+      "timestamp": "2026-11-19 13:13:00",
+      "username": "sarah_sec",
+      "filename": "datavault_audit_logs_1795071810584.csv",
+      "action": "READ",
+      "result": "ALLOWED",
+      "clientIp": "2401:4900:6270:c419:19d:700e:9f66:9a32",
+      "reason": "Authorized: File is marked PUBLIC by @guest_user"
+    }
+  ],
+  "alerts": []
+}

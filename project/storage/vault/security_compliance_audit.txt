@@ -1,0 +1,5 @@
+=== SOC2 / ISO-27001 COMPLIANCE POLICY ===
+1. Mandatory MFA for all administrators.
+2. Least-privilege ACL for classified files.
+3. Automated intrusion detection on 3 failed attempts.
+4. Cryptographic SHA-256 fingerprinting on disk read/write.
